@@ -1,0 +1,4 @@
+repository "Playerprefs学习@tj_lai_chi@cloud.cn"
+  path "/"
+    br "/main"
+    co "/main"

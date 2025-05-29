@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class PlayerPrefsDataMgr : MonoBehaviour
+public class PlayerPrefsDataMgr
 {
     //单例模式
     //两个静态 静态私有成员变量 静态公共成员属性（成员方法）
@@ -36,7 +38,68 @@ public class PlayerPrefsDataMgr : MonoBehaviour
     {
         //就是要通过Type得到传入数据对象的所有的字段
         //然后结合PlayerPrefs来进行存储
-        
+
+        #region 得到所有字段
+        Type dataType = data.GetType();
+        //得到所有字段
+        FieldInfo[] infos = dataType.GetFields();
+        //for (int i = 0; i < infos.Length; i++)
+        //{
+        //    Debug.Log(infos[i]);
+        //}
+        #endregion
+        #region 自定义key规则进行存储
+        //自定义Key = keyName_数据类型_字段类型_变量名
+        #endregion
+        #region 遍历存储
+        string saveKeyName;
+        FieldInfo info;
+        for(int i = 0;i < infos.Length; i++)
+        {
+            //通过FieldInfo来获取字段类型和字段的名字
+            //字段的类型的名字 info.FieldType.Name
+            //字段的名字 info.Name
+            info = infos[i];
+            saveKeyName = keyName + "_" +  dataType.Name + "_" + info.FieldType.Name + "_" + info.Name;
+          
+            //获取字段对应的值
+            object fieldValue = info.GetValue(data);
+
+            Save(fieldValue, saveKeyName);
+ 
+        }
+        #endregion
+    }
+
+    /// <summary>
+    /// 通过playerPrefs来存储 通用存储便于复用
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="keyName"></param>
+    private void Save(object value, string keyName)
+    {
+        Type valueType = value.GetType();
+
+        if (valueType == typeof(int))
+        {
+            Debug.Log("存储Int" + keyName);
+            PlayerPrefs.SetInt(keyName, (int)value);
+        }
+        else if (valueType == typeof(float))
+        {
+            Debug.Log("存储Int" + keyName);
+            PlayerPrefs.SetFloat(keyName, (float)value);
+        }
+        else if (valueType == typeof(string))
+        {
+            Debug.Log("存储Int" + keyName);
+            PlayerPrefs.SetString(keyName, (string)value);
+        }
+        else if(valueType == typeof(bool))
+        {
+            Debug.Log("存储Int" + keyName);
+            PlayerPrefs.SetInt(keyName, (bool)value ? 1 : 0);
+        }
     }
 
     public object LoadData(Type type, string keyName)

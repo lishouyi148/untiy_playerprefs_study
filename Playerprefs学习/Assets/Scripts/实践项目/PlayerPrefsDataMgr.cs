@@ -54,19 +54,19 @@ public class PlayerPrefsDataMgr
         #region 遍历存储
         string saveKeyName;
         FieldInfo info;
-        for(int i = 0;i < infos.Length; i++)
+        for (int i = 0; i < infos.Length; i++)
         {
             //通过FieldInfo来获取字段类型和字段的名字
             //字段的类型的名字 info.FieldType.Name
             //字段的名字 info.Name
             info = infos[i];
-            saveKeyName = keyName + "_" +  dataType.Name + "_" + info.FieldType.Name + "_" + info.Name;
-          
+            saveKeyName = keyName + "_" + dataType.Name + "_" + info.FieldType.Name + "_" + info.Name;
+
             //获取字段对应的值
             object fieldValue = info.GetValue(data);
 
             Save(fieldValue, saveKeyName);
- 
+
         }
         #endregion
     }
@@ -95,7 +95,7 @@ public class PlayerPrefsDataMgr
             Debug.Log("存储Int" + keyName);
             PlayerPrefs.SetString(keyName, (string)value);
         }
-        else if(valueType == typeof(bool))
+        else if (valueType == typeof(bool))
         {
             Debug.Log("存储Int" + keyName);
             PlayerPrefs.SetInt(keyName, (bool)value ? 1 : 0);
@@ -114,12 +114,32 @@ public class PlayerPrefsDataMgr
             //存储数量
             PlayerPrefs.SetInt(keyName, list.Count);
             int index = 0;
-            foreach ( object obj in list )
+            foreach (object obj in list)
             {
                 //存储数值
                 Save(obj, keyName + "_" + index);
                 ++index;
             }
+        }
+        else if (typeof(IDictionary).IsAssignableFrom(valueType))
+        {
+            Debug.Log("存储Dictionary" + keyName);
+            IDictionary dict = value as IDictionary;
+
+            PlayerPrefs.SetInt(keyName, dict.Count);
+
+            int index = 0;
+            foreach (object key in dict.Keys)
+            {
+                Save(key, keyName + "_key_" + index);
+                Save(dict[key], keyName + "_value_" + index);
+                ++index;
+            }
+        }
+        //基础数据类型都不是 可能就是自定义数据类型
+        else
+        {
+            SaveData(value, keyName);
         }
     }
 

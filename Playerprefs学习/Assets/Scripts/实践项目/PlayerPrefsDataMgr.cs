@@ -100,6 +100,27 @@ public class PlayerPrefsDataMgr
             Debug.Log("存储Int" + keyName);
             PlayerPrefs.SetInt(keyName, (bool)value ? 1 : 0);
         }
+        //如何判断 泛型类的类型呢
+        //通过反射 判断 父子关系
+        //这相当于是判断 字段是不是IList的子类
+        //本质是将List<int>转为多个int来存储
+        else if (typeof(IList).IsAssignableFrom(valueType))
+        {
+            Debug.Log("存储List" + keyName);
+            //父类装子类
+            //安全的将value转换位IList类型
+            IList list = value as IList;
+
+            //存储数量
+            PlayerPrefs.SetInt(keyName, list.Count);
+            int index = 0;
+            foreach ( object obj in list )
+            {
+                //存储数值
+                Save(obj, keyName + "_" + index);
+                ++index;
+            }
+        }
     }
 
     public object LoadData(Type type, string keyName)

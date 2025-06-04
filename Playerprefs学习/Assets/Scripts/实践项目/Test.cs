@@ -10,6 +10,7 @@ public class PlayerInfo
     public float height = 170.1f;
     public Gender sex = Gender.Male;
 
+    public List<int> list = new List<int>() {1, 2, 4, 5};
     public enum Gender
     {
         Male, 

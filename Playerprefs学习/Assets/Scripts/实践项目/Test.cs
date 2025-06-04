@@ -1,67 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Analytics;
 
 public class PlayerInfo
 {
-    public int age = 10;
-    public string name = "未命名";
-    public float height = 177.5f;
-    public bool sex = true;
+    public int age = 22;
+    public string name = "李守懿";
+    public float height = 170.1f;
+    public Gender sex = Gender.Male;
 
-    public List<int> list = new List<int>() { 1, 2, 3, 4 };
-
-    public Dictionary<int, string> dic = new Dictionary<int, string>()
+    public List<int> list = new List<int>() {1, 2, 4, 5};
+    public enum Gender
     {
-        { 1,"123"},
-        { 2,"234"}
-    };
-
-    public ItemInfo itemInfo = new ItemInfo(3, 99);
-
-    public List<ItemInfo> itemList = new List<ItemInfo>() {
-        new ItemInfo(1, 10),
-        new ItemInfo(2, 20),
-    };
-
-    public Dictionary<int, ItemInfo> itemDic = new Dictionary<int, ItemInfo>()
-    {
-        { 3, new ItemInfo(3, 22)},
-        { 4, new ItemInfo(4, 33)},
-    };
-}
-
-public class ItemInfo
-{
-    public int id;
-    public int num;
-
-    public ItemInfo()
-    {
-
-    }
-
-    public ItemInfo(int id, int num)
-    {
-        this.id = id;
-        this.num = num;
+        Male, 
+        Female  
     }
 }
-
-
 public class Test : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
-        PlayerInfo p = new PlayerInfo();
-        //需要把这个数据对象的信息 存储到硬盘
-        PlayerPrefsDataMgr.Instance.SaveData(p, "Player1");
+        PlayerInfo palyer = new PlayerInfo();
+
+        PlayerPrefsDataMgr.Instance.SaveData(palyer, "player1");
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 }

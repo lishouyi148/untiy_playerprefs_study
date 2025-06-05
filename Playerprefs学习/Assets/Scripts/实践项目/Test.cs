@@ -57,6 +57,18 @@ public class Test : MonoBehaviour
         PlayerInfo p = new PlayerInfo();
         //需要把这个数据对象的信息 存储到硬盘
         PlayerPrefsDataMgr.Instance.SaveData(p, "Player1");
+
+        //读取数据
+        PlayerInfo p2 = PlayerPrefsDataMgr.Instance.LoadData(typeof(PlayerInfo), "Player1") as PlayerInfo;
+        if (p2 == null)
+        {
+            Debug.LogError("p2 is null! Check LoadData method.");
+        }
+        else
+        {
+            Debug.Log($"p2.age: {p2.age}");
+            Debug.Log($"p2.name: {p2.name}");
+        }
     }
 
     // Update is called once per frame

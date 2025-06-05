@@ -40,13 +40,10 @@ public class PlayerPrefsDataMgr
         //然后结合PlayerPrefs来进行存储
 
         #region 得到所有字段
+        //传入对象的类型
         Type dataType = data.GetType();
         //得到所有字段
         FieldInfo[] infos = dataType.GetFields();
-        //for (int i = 0; i < infos.Length; i++)
-        //{
-        //    Debug.Log(infos[i]);
-        //}
         #endregion
         #region 自定义key规则进行存储
         //自定义Key = keyName_数据类型_字段类型_变量名
@@ -153,7 +150,53 @@ public class PlayerPrefsDataMgr
         //根据你传入的类型和keyName
         //依据你存储数据时 key的拼接规则来进行数据的获取赋值返回出去
 
+        //根据Type创建要返回出去的对象
+        object data = Activator.CreateInstance(type);
+        //得到所有字段
+        FieldInfo[] infos = type.GetFields();
+        //用于拼接字符串
+        string loadKeyName = "";
+        //单个字段
+        FieldInfo info;
 
+        for (int i = 0; i < infos.Length; i++)
+        {
+            info = infos[i];
+            //key的拼接规则和存储时一摸一样
+            loadKeyName = keyName + "_" + type.Name + "_" + info.FieldType.Name + "_" + info.Name;
+
+            //有key可以结合PlayerPrefs获得value
+            info.SetValue(data, Load(info.FieldType, loadKeyName));
+
+        }
+
+        return data;
+    }
+
+    /// <summary>
+    /// 得到单个数据的方法， 便于服用 
+    /// </summary>
+    /// <param name="loadType">用于判断使用哪种类型的读取</param>
+    /// <param name="keyName">唯一标识</param>
+    private object Load(Type loadType, string keyName)
+    {
+        //根据字段来判断使用什么api来读取
+        if (loadType == typeof(int))
+        {
+            return PlayerPrefs.GetInt(keyName, 0);
+        }
+        else if (loadType == typeof(float))
+        {
+            return PlayerPrefs.GetFloat(keyName);
+        }
+        else if (loadType == typeof(string))
+        {
+            return PlayerPrefs.GetString(keyName, "");
+        }
+        else if (loadType == typeof(bool))
+        {
+            return PlayerPrefs.GetInt(keyName, 0) == 1 ? true : false;
+        }
         return null;
     }
 }
